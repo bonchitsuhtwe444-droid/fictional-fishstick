@@ -14,14 +14,14 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.creatorledger.mm.data.DashboardData
 import com.creatorledger.mm.util.formatKyat
-import java.time.LocalDate
+import java.time.YearMonth
 
 private val MONTH_NAMES = listOf(
     "ဇန်နဝါရီ", "ဖေဖော်ဝါရီ", "မတ်", "ဧပြီ", "မေ", "ဇွန်",
@@ -29,16 +29,9 @@ private val MONTH_NAMES = listOf(
 )
 
 @Composable
-fun DashboardScreen(modifier: Modifier = Modifier) {
-    val today = remember { LocalDate.now() }
-    val monthLabel = MONTH_NAMES[today.monthValue - 1] + " " + today.year
-
-    // Stage 3 မှာ Database ကနေ အမှန်တကယ်ဖတ်မယ့် တန်ဖိုးများ။ အခုတော့ Database မရှိသေးလို့ သုည ထားထားတယ်။
-    val receivedIncome = 0L
-    val totalExpense = 0L
-    val remainingToReceive = 0L
-    val unpaidSponsorCount = 0
-    val monthlyProfit = receivedIncome - totalExpense
+fun DashboardScreen(data: DashboardData, month: YearMonth, modifier: Modifier = Modifier) {
+    val monthLabel = MONTH_NAMES[month.monthValue - 1] + " " + month.year
+    val profit = data.monthlyProfit
 
     Column(
         modifier = modifier
@@ -52,8 +45,9 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
 
         SummaryCard(
             label = "လစဉ်အမြတ်",
-            value = formatKyat(monthlyProfit),
-            valueColor = if (monthlyProfit >= 0) AppColors.Teal else AppColors.Danger,
+            value = formatKyat(profit),
+            valueColor = if (profit >= 0) AppColors.Teal else AppColors.Danger,
+            caption = "လက်ခံရရှိငွေ − ပေးချေပြီးအသုံးစရိတ်",
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -63,13 +57,13 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
         ) {
             SummaryCard(
                 label = "လက်ခံရရှိပြီး ဝင်ငွေ",
-                value = formatKyat(receivedIncome),
+                value = formatKyat(data.receivedIncome),
                 valueColor = AppColors.Teal,
                 modifier = Modifier.weight(1f)
             )
             SummaryCard(
-                label = "အသုံးစရိတ်",
-                value = formatKyat(totalExpense),
+                label = "ပေးချေပြီး အသုံးစရိတ်",
+                value = formatKyat(data.paidExpense),
                 valueColor = AppColors.Danger,
                 modifier = Modifier.weight(1f)
             )
@@ -81,13 +75,14 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
         ) {
             SummaryCard(
                 label = "ရရန်ကျန်ငွေ",
-                value = formatKyat(remainingToReceive),
+                value = formatKyat(data.remainingToReceive),
                 valueColor = AppColors.Warning,
+                caption = "စုစုပေါင်း",
                 modifier = Modifier.weight(1f)
             )
             SummaryCard(
-                label = "ငွေမရသေးသော Sponsor",
-                value = unpaidSponsorCount.toString() + " ခု",
+                label = "ငွေမပြည့်သေးသော Sponsor",
+                value = data.unpaidSponsorCount.toString() + " ခု",
                 valueColor = AppColors.Warning,
                 modifier = Modifier.weight(1f)
             )
@@ -95,7 +90,7 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
 
         InfoCard(
             title = "နောက်ဆုံး မှတ်တမ်းများ",
-            note = "မှတ်တမ်း မရှိသေးပါ။ ဝင်ငွေ/အသုံးစရိတ် ထည့်လာရင် ဒီမှာ ပေါ်လာပါမယ်။"
+            note = "မှတ်တမ်း စာရင်းကို Stage 4 နဲ့ 5 မှာ ထည့်ပါမယ်။"
         )
 
         InfoCard(
@@ -110,7 +105,8 @@ private fun SummaryCard(
     label: String,
     value: String,
     valueColor: Color,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    caption: String? = null
 ) {
     Card(
         modifier = modifier,
@@ -120,6 +116,10 @@ private fun SummaryCard(
             Text(label, color = AppColors.TextSecondary, fontSize = 14.sp)
             Spacer(modifier = Modifier.height(6.dp))
             Text(value, color = valueColor, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            if (caption != null) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(caption, color = AppColors.TextSecondary, fontSize = 12.sp)
+            }
         }
     }
 }
