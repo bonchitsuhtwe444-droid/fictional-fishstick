@@ -31,6 +31,7 @@ import com.creatorledger.mm.data.SponsorDealEntity
 import com.creatorledger.mm.util.formatKyat
 import com.creatorledger.mm.util.parseAmount
 import java.time.LocalDate
+import com.creatorledger.mm.util.tr
 
 @Composable
 fun SponsorDealFormScreen(
@@ -65,7 +66,7 @@ fun SponsorDealFormScreen(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Text(
-            text = if (initial == null) "Sponsor Deal အသစ်" else "Sponsor Deal ပြင်ဆင်ရန်",
+            text = if (initial == null) tr("Sponsor Deal အသစ်") else tr("Sponsor Deal ပြင်ဆင်ရန်"),
             color = Color.White,
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold
@@ -74,17 +75,17 @@ fun SponsorDealFormScreen(
         OutlinedTextField(
             value = brand,
             onValueChange = { brand = it },
-            label = { Text("Brand / Client နာမည်") },
+            label = { Text(tr("Brand / Client နာမည်")) },
             singleLine = true,
             isError = triedSave && brandError,
-            supportingText = { if (triedSave && brandError) Text("Brand နာမည်ကို ဖြည့်ပါ") },
+            supportingText = { if (triedSave && brandError) Text(tr("Brand နာမည်ကို ဖြည့်ပါ")) },
             modifier = Modifier.fillMaxWidth()
         )
 
         OutlinedTextField(
             value = campaign,
             onValueChange = { campaign = it },
-            label = { Text("Campaign နာမည်") },
+            label = { Text(tr("Campaign နာမည်")) },
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
@@ -92,15 +93,15 @@ fun SponsorDealFormScreen(
         OutlinedTextField(
             value = feeText,
             onValueChange = { feeText = it },
-            label = { Text("သဘောတူထားသော ကြေး (ကျပ်)") },
+            label = { Text(tr("သဘောတူထားသော ကြေး (ကျပ်)")) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             isError = (triedSave && feeError) || belowReceived,
             supportingText = {
                 if (triedSave && feeError) {
-                    Text("ကြေးကို ၀ ထက်ကြီးတဲ့ ဂဏန်းနဲ့ ဖြည့်ပါ")
+                    Text(tr("ကြေးကို ၀ ထက်ကြီးတဲ့ ဂဏန်းနဲ့ ဖြည့်ပါ"))
                 } else if (belowReceived) {
-                    Text("လက်ခံပြီးငွေ " + formatKyat(receivedSoFar) + " ထက် မနည်းရပါ")
+                    Text(tr("လက်ခံပြီးငွေ ") + formatKyat(receivedSoFar) + tr(" ထက် မနည်းရပါ"))
                 } else if (fee != null && fee > 0L) {
                     Text(formatKyat(fee))
                 }
@@ -112,7 +113,7 @@ fun SponsorDealFormScreen(
         OptionalDateField("Delivery Deadline", deadline) { deadline = it }
         OptionalDateField("Payment Due Date", dueDate) { dueDate = it }
 
-        Text("Deal အခြေအနေ", color = AppColors.TextSecondary, fontSize = 14.sp)
+        Text(tr("Deal အခြေအနေ"), color = AppColors.TextSecondary, fontSize = 14.sp)
         Row(
             modifier = Modifier.horizontalScroll(rememberScrollState()),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -125,7 +126,7 @@ fun SponsorDealFormScreen(
         OutlinedTextField(
             value = note,
             onValueChange = { note = it },
-            label = { Text("မှတ်ချက်") },
+            label = { Text(tr("မှတ်ချက်")) },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -152,9 +153,9 @@ fun SponsorDealFormScreen(
                         )
                     }
                 }
-            ) { Text("သိမ်းမယ်") }
+            ) { Text(tr("သိမ်းမယ်")) }
 
-            TextButton(onClick = onCancel) { Text("မလုပ်တော့ဘူး") }
+            TextButton(onClick = onCancel) { Text(tr("မလုပ်တော့ဘူး")) }
         }
     }
 }

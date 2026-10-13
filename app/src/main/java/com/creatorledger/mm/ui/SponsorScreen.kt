@@ -37,6 +37,7 @@ import com.creatorledger.mm.data.SponsorDealEntity
 import com.creatorledger.mm.data.SponsorPaymentEntity
 import com.creatorledger.mm.util.formatKyat
 import kotlinx.coroutines.launch
+import com.creatorledger.mm.util.tr
 
 private enum class SponsorMode { LIST, DEAL_FORM, DETAIL }
 
@@ -185,7 +186,7 @@ private fun SponsorList(
 
         item {
             Button(modifier = Modifier.fillMaxWidth(), onClick = onAdd) {
-                Text("+ Sponsor Deal အသစ် ထည့်မယ်")
+                Text(tr("+ Sponsor Deal အသစ် ထည့်မယ်"))
             }
         }
 
@@ -194,10 +195,10 @@ private fun SponsorList(
                 modifier = Modifier.horizontalScroll(rememberScrollState()),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                FilterOption("အားလုံး", filter == 0) { onFilter(0) }
-                FilterOption("ငွေမပြည့်သေး", filter == 1) { onFilter(1) }
-                FilterOption("ငွေပြည့်ပြီး", filter == 2) { onFilter(2) }
-                FilterOption("ပယ်ဖျက်", filter == 3) { onFilter(3) }
+                FilterOption(tr("အားလုံး"), filter == 0) { onFilter(0) }
+                FilterOption(tr("ငွေမပြည့်သေး"), filter == 1) { onFilter(1) }
+                FilterOption(tr("ငွေပြည့်ပြီး"), filter == 2) { onFilter(2) }
+                FilterOption(tr("ပယ်ဖျက်"), filter == 3) { onFilter(3) }
             }
         }
 
@@ -207,12 +208,12 @@ private fun SponsorList(
                 colors = CardDefaults.cardColors(containerColor = AppColors.NavyLight)
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text("ပယ်ဖျက်မထားတဲ့ Deal အားလုံး", color = AppColors.TextSecondary, fontSize = 13.sp)
+                    Text(tr("ပယ်ဖျက်မထားတဲ့ Deal အားလုံး"), color = AppColors.TextSecondary, fontSize = 13.sp)
                     Spacer(modifier = Modifier.height(6.dp))
-                    Text("သဘောတူကြေး - " + formatKyat(totalAgreed), color = Color.White, fontSize = 15.sp)
-                    Text("လက်ခံရရှိပြီး - " + formatKyat(totalReceived), color = AppColors.Teal, fontSize = 15.sp)
+                    Text(tr("သဘောတူကြေး - ") + formatKyat(totalAgreed), color = Color.White, fontSize = 15.sp)
+                    Text(tr("လက်ခံရရှိပြီး - ") + formatKyat(totalReceived), color = AppColors.Teal, fontSize = 15.sp)
                     Text(
-                        "ရရန်ကျန်ငွေ - " + formatKyat(totalRemaining),
+                        tr("ရရန်ကျန်ငွေ - ") + formatKyat(totalRemaining),
                         color = AppColors.Warning,
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Bold
@@ -224,7 +225,7 @@ private fun SponsorList(
         if (shown.isEmpty()) {
             item {
                 Text(
-                    "ဒီစစ်ထုတ်မှုနဲ့ ကိုက်တဲ့ Deal မရှိပါ။",
+                    tr("ဒီစစ်ထုတ်မှုနဲ့ ကိုက်တဲ့ Deal မရှိပါ။"),
                     color = AppColors.TextSecondary,
                     fontSize = 14.sp
                 )
@@ -246,10 +247,10 @@ private fun SponsorList(
                         Text(deal.campaignName, color = AppColors.TextSecondary, fontSize = 13.sp)
                     }
                     Spacer(modifier = Modifier.height(6.dp))
-                    Text("သဘောတူကြေး - " + formatKyat(deal.agreedFeeMmk), color = Color.White, fontSize = 14.sp)
-                    Text("လက်ခံပြီး - " + formatKyat(received), color = AppColors.Teal, fontSize = 14.sp)
+                    Text(tr("သဘောတူကြေး - ") + formatKyat(deal.agreedFeeMmk), color = Color.White, fontSize = 14.sp)
+                    Text(tr("လက်ခံပြီး - ") + formatKyat(received), color = AppColors.Teal, fontSize = 14.sp)
                     Text(
-                        text = if (remaining > 0L) "ရရန်ကျန် - " + formatKyat(remaining) else "ငွေပြည့်ပါပြီ",
+                        text = if (remaining > 0L) tr("ရရန်ကျန် - ") + formatKyat(remaining) else tr("ငွေပြည့်ပါပြီ"),
                         color = if (remaining > 0L) AppColors.Warning else AppColors.Teal,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold
@@ -257,7 +258,7 @@ private fun SponsorList(
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         dealStatusLabel(deal.status) +
-                            (if (deal.paymentDueDate != null) " • ငွေရက်သတ် " + deal.paymentDueDate else ""),
+                            (if (deal.paymentDueDate != null) tr(" • ငွေရက်သတ် ") + deal.paymentDueDate else ""),
                         color = AppColors.TextSecondary,
                         fontSize = 12.sp
                     )

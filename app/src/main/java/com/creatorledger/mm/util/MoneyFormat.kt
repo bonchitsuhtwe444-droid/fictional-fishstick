@@ -4,7 +4,7 @@ import java.util.Locale
 
 // ငွေပမာဏ (Long) ကို "1,250,000 ကျပ်" ပုံစံ ပြောင်းပေးတယ်
 fun formatKyat(amount: Long): String {
-    return String.format(Locale.US, "%,d", amount) + " ကျပ်"
+    return String.format(Locale.US, "%,d", amount) + tr(" ကျပ်")
 }
 
 // ရိုက်ထည့်တဲ့စာသားကို ငွေပမာဏ (Long) ပြောင်းတယ်

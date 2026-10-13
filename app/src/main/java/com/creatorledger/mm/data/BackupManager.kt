@@ -5,6 +5,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import org.json.JSONArray
 import org.json.JSONObject
+import com.creatorledger.mm.util.tr
 
 // Backup ဖိုင်ထဲက Data အားလုံး
 data class BackupData(
@@ -98,7 +99,7 @@ suspend fun buildBackupJson(db: AppDatabase): String {
 // JSON Backup ဖတ်ခြင်း (Database ကို မထိခင် အကုန်စစ်ဆေးတယ်)
 // ---------------------------------------------------------------
 private fun JSONObject.reqString(key: String): String {
-    if (isNull(key)) throw BackupFormatException("'" + key + "' မရှိပါ")
+    if (isNull(key)) throw BackupFormatException("'" + key + tr("' မရှိပါ"))
     return getString(key)
 }
 
@@ -111,9 +112,9 @@ private fun JSONObject.optStringOrNull(key: String): String? {
 }
 
 private fun JSONObject.reqAmount(key: String): Long {
-    if (isNull(key)) throw BackupFormatException("'" + key + "' မရှိပါ")
+    if (isNull(key)) throw BackupFormatException("'" + key + tr("' မရှိပါ"))
     val v = getLong(key)
-    if (v < 0L) throw BackupFormatException("'" + key + "' က အနှုတ်ဂဏန်း ဖြစ်နေပါတယ်")
+    if (v < 0L) throw BackupFormatException("'" + key + tr("' က အနှုတ်ဂဏန်း ဖြစ်နေပါတယ်"))
     return v
 }
 
@@ -122,7 +123,7 @@ private fun checkDate(value: String?, key: String): String? {
     try {
         LocalDate.parse(value)
     } catch (e: Exception) {
-        throw BackupFormatException("'" + key + "' ရက်စွဲပုံစံ မမှန်ပါ")
+        throw BackupFormatException("'" + key + tr("' ရက်စွဲပုံစံ မမှန်ပါ"))
     }
     return value
 }
@@ -131,13 +132,13 @@ fun parseBackup(text: String): BackupData {
     val root = try {
         JSONObject(text)
     } catch (e: Exception) {
-        throw BackupFormatException("ဒီဖိုင်က JSON Backup ဖိုင် မဟုတ်ပါ")
+        throw BackupFormatException(tr("ဒီဖိုင်က JSON Backup ဖိုင် မဟုတ်ပါ"))
     }
     if (root.optString("app") != BACKUP_APP_NAME) {
-        throw BackupFormatException("ဒီဖိုင်က CreatorLedger MM ရဲ့ Backup ဖိုင် မဟုတ်ပါ")
+        throw BackupFormatException(tr("ဒီဖိုင်က CreatorLedger MM ရဲ့ Backup ဖိုင် မဟုတ်ပါ"))
     }
     if (root.optInt("backupVersion", -1) != BACKUP_VERSION) {
-        throw BackupFormatException("Backup ဗားရှင်း မကိုက်ပါ")
+        throw BackupFormatException(tr("Backup ဗားရှင်း မကိုက်ပါ"))
     }
 
     try {
@@ -147,11 +148,11 @@ fun parseBackup(text: String): BackupData {
             val o = incomeArr.getJSONObject(idx)
             val status = o.reqString("paymentStatus")
             if (status != PaymentStatus.RECEIVED && status != PaymentStatus.PENDING) {
-                throw BackupFormatException("ဝင်ငွေ paymentStatus မမှန်ပါ")
+                throw BackupFormatException(tr("ဝင်ငွေ paymentStatus မမှန်ပါ"))
             }
             val receivedDate = checkDate(o.optStringOrNull("receivedDate"), "receivedDate")
             if (status == PaymentStatus.RECEIVED && receivedDate == null) {
-                throw BackupFormatException("လက်ခံရရှိပြီး ဝင်ငွေမှာ receivedDate မရှိပါ")
+                throw BackupFormatException(tr("လက်ခံရရှိပြီး ဝင်ငွေမှာ receivedDate မရှိပါ"))
             }
             incomes.add(
                 IncomeEntity(
@@ -174,11 +175,11 @@ fun parseBackup(text: String): BackupData {
             val o = expenseArr.getJSONObject(idx)
             val status = o.reqString("paymentStatus")
             if (status != PaymentStatus.PAID && status != PaymentStatus.UNPAID) {
-                throw BackupFormatException("အသုံးစရိတ် paymentStatus မမှန်ပါ")
+                throw BackupFormatException(tr("အသုံးစရိတ် paymentStatus မမှန်ပါ"))
             }
             val paidDate = checkDate(o.optStringOrNull("paidDate"), "paidDate")
             if (status == PaymentStatus.PAID && paidDate == null) {
-                throw BackupFormatException("ပေးချေပြီး အသုံးစရိတ်မှာ paidDate မရှိပါ")
+                throw BackupFormatException(tr("ပေးချေပြီး အသုံးစရိတ်မှာ paidDate မရှိပါ"))
             }
             expenses.add(
                 ExpenseEntity(
@@ -204,7 +205,7 @@ fun parseBackup(text: String): BackupData {
             val o = dealArr.getJSONObject(idx)
             val status = o.reqString("status")
             if (status !in validDealStatuses) {
-                throw BackupFormatException("Sponsor Deal status မမှန်ပါ")
+                throw BackupFormatException(tr("Sponsor Deal status မမှန်ပါ"))
             }
             deals.add(
                 SponsorDealEntity(
@@ -242,19 +243,19 @@ fun parseBackup(text: String): BackupData {
             deals.map { it.id }.toSet().size != deals.size ||
             payments.map { it.id }.toSet().size != payments.size
         ) {
-            throw BackupFormatException("ID ထပ်နေတဲ့ မှတ်တမ်းတွေ ပါနေပါတယ်")
+            throw BackupFormatException(tr("ID ထပ်နေတဲ့ မှတ်တမ်းတွေ ပါနေပါတယ်"))
         }
         val dealById = deals.associateBy { it.id }
         val paidByDeal = HashMap<Long, Long>()
         for (p in payments) {
             if (dealById[p.dealId] == null) {
-                throw BackupFormatException("မရှိတဲ့ Deal အတွက် ငွေလက်ခံမှတ်တမ်း ပါနေပါတယ်")
+                throw BackupFormatException(tr("မရှိတဲ့ Deal အတွက် ငွေလက်ခံမှတ်တမ်း ပါနေပါတယ်"))
             }
             paidByDeal[p.dealId] = (paidByDeal[p.dealId] ?: 0L) + p.amountMmk
         }
         for (d in deals) {
             if ((paidByDeal[d.id] ?: 0L) > d.agreedFeeMmk) {
-                throw BackupFormatException(d.brandName + " Deal ရဲ့ လက်ခံငွေက သဘောတူကြေးထက် ကျော်နေပါတယ်")
+                throw BackupFormatException(d.brandName + tr(" Deal ရဲ့ လက်ခံငွေက သဘောတူကြေးထက် ကျော်နေပါတယ်"))
             }
         }
 
@@ -268,7 +269,7 @@ fun parseBackup(text: String): BackupData {
     } catch (e: BackupFormatException) {
         throw e
     } catch (e: Exception) {
-        throw BackupFormatException("Backup ဖိုင်ထဲက အချက်အလက်တွေ မမှန်ပါ")
+        throw BackupFormatException(tr("Backup ဖိုင်ထဲက အချက်အလက်တွေ မမှန်ပါ"))
     }
 }
 

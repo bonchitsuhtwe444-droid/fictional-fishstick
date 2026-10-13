@@ -35,6 +35,7 @@ import com.creatorledger.mm.data.computeMonthReport
 import com.creatorledger.mm.util.formatKyat
 import java.time.YearMonth
 import kotlinx.coroutines.flow.combine
+import com.creatorledger.mm.util.tr
 
 private data class CompareRow(
     val label: String,
@@ -74,7 +75,7 @@ fun ReportScreen(db: AppDatabase, modifier: Modifier = Modifier) {
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Text("လစဉ် Report", color = Color.White, fontSize = 26.sp, fontWeight = FontWeight.Bold)
+        Text(tr("လစဉ် Report"), color = Color.White, fontSize = 26.sp, fontWeight = FontWeight.Bold)
 
         // နှစ်ရွေးချယ်ခြင်း
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -96,70 +97,70 @@ fun ReportScreen(db: AppDatabase, modifier: Modifier = Modifier) {
         }
 
         // အမြတ်အရှုံးနဲ့ Cash Flow
-        ReportCard("ရလဒ် - " + monthLabel(month)) {
+        ReportCard(tr("ရလဒ် - ") + monthLabel(month)) {
             ReportRow(
-                "အမြတ်အရှုံး (Profit)",
+                tr("အမြတ်အရှုံး (Profit)"),
                 formatKyat(current.profit),
                 if (current.profit >= 0L) AppColors.Teal else AppColors.Danger
             )
             Text(
-                "ရရှိပိုင်ခွင့်ရှိတဲ့ ဝင်ငွေ − ဒီလ ကုန်ကျစရိတ် (ငွေရ/မရ၊ ပေး/မပေး မခွဲ)",
+                tr("ရရှိပိုင်ခွင့်ရှိတဲ့ ဝင်ငွေ − ဒီလ ကုန်ကျစရိတ် (ငွေရ/မရ၊ ပေး/မပေး မခွဲ)"),
                 color = AppColors.TextSecondary,
                 fontSize = 12.sp
             )
             Spacer(modifier = Modifier.height(8.dp))
             ReportRow(
-                "ငွေလည်ပတ်မှု (Cash Flow)",
+                tr("ငွေလည်ပတ်မှု (Cash Flow)"),
                 formatKyat(current.cashFlow),
                 if (current.cashFlow >= 0L) AppColors.Teal else AppColors.Danger
             )
             Text(
-                "ဒီလ လက်ခံရတဲ့ငွေ − ဒီလ ပေးချေခဲ့တဲ့ငွေ (ကိုယ့်လက်ထဲ ငွေတက်/ကျ)",
+                tr("ဒီလ လက်ခံရတဲ့ငွေ − ဒီလ ပေးချေခဲ့တဲ့ငွေ (ကိုယ့်လက်ထဲ ငွေတက်/ကျ)"),
                 color = AppColors.TextSecondary,
                 fontSize = 12.sp
             )
         }
 
-        ReportCard("ဝင်ငွေ") {
-            ReportRow("လက်ခံရရှိပြီးသော ဝင်ငွေ", formatKyat(current.receivedIncome), AppColors.Teal)
-            ReportRow("ရရှိပိုင်ခွင့်ရှိပြီးသော ဝင်ငွေ", formatKyat(current.earnedIncome), Color.White)
-            ReportRow("ရရန်ကျန်ငွေ", formatKyat(current.receivableOutstanding), AppColors.Warning)
+        ReportCard(tr("ဝင်ငွေ")) {
+            ReportRow(tr("လက်ခံရရှိပြီးသော ဝင်ငွေ"), formatKyat(current.receivedIncome), AppColors.Teal)
+            ReportRow(tr("ရရှိပိုင်ခွင့်ရှိပြီးသော ဝင်ငွေ"), formatKyat(current.earnedIncome), Color.White)
+            ReportRow(tr("ရရန်ကျန်ငွေ"), formatKyat(current.receivableOutstanding), AppColors.Warning)
         }
 
-        ReportCard("အသုံးစရိတ်") {
-            ReportRow("ပေးချေပြီးသော အသုံးစရိတ်", formatKyat(current.paidExpense), AppColors.Danger)
-            ReportRow("ဒီလ ကုန်ကျစရိတ် စုစုပေါင်း", formatKyat(current.incurredExpense), Color.White)
-            ReportRow("ပေးချေရန်ကျန်သော အသုံးစရိတ်", formatKyat(current.payableOutstanding), AppColors.Warning)
+        ReportCard(tr("အသုံးစရိတ်")) {
+            ReportRow(tr("ပေးချေပြီးသော အသုံးစရိတ်"), formatKyat(current.paidExpense), AppColors.Danger)
+            ReportRow(tr("ဒီလ ကုန်ကျစရိတ် စုစုပေါင်း"), formatKyat(current.incurredExpense), Color.White)
+            ReportRow(tr("ပေးချေရန်ကျန်သော အသုံးစရိတ်"), formatKyat(current.payableOutstanding), AppColors.Warning)
         }
 
-        ReportCard("Platform အလိုက် ဝင်ငွေ (ရရှိပိုင်ခွင့်)") {
+        ReportCard(tr("Platform အလိုက် ဝင်ငွေ (ရရှိပိုင်ခွင့်)")) {
             if (current.incomeByPlatform.isEmpty()) {
-                Text("မှတ်တမ်း မရှိပါ။", color = AppColors.TextSecondary, fontSize = 14.sp)
+                Text(tr("မှတ်တမ်း မရှိပါ။"), color = AppColors.TextSecondary, fontSize = 14.sp)
             }
             for (entry in current.incomeByPlatform.entries.sortedByDescending { it.value }) {
                 ReportRow(platformLabel(entry.key), formatKyat(entry.value), Color.White)
             }
         }
 
-        ReportCard("Category အလိုက် အသုံးစရိတ်") {
+        ReportCard(tr("Category အလိုက် အသုံးစရိတ်")) {
             if (current.expenseByCategory.isEmpty()) {
-                Text("မှတ်တမ်း မရှိပါ။", color = AppColors.TextSecondary, fontSize = 14.sp)
+                Text(tr("မှတ်တမ်း မရှိပါ။"), color = AppColors.TextSecondary, fontSize = 14.sp)
             }
             for (entry in current.expenseByCategory.entries.sortedByDescending { it.value }) {
                 ReportRow(categoryLabel(entry.key), formatKyat(entry.value), Color.White)
             }
         }
 
-        ReportCard("ယခင်လ (" + monthLabel(month.minusMonths(1)) + ") နှင့် နှိုင်းယှဉ်ချက်") {
+        ReportCard(tr("ယခင်လ (") + monthLabel(month.minusMonths(1)) + tr(") နှင့် နှိုင်းယှဉ်ချက်")) {
             val rows = comparisonRows(current, previous)
             for (row in rows) {
                 val diff = row.current - row.previous
                 val good = if (row.higherIsBetter) diff >= 0L else diff <= 0L
                 Text(row.label, color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold)
-                Text("ဒီလ - " + formatKyat(row.current), color = AppColors.TextSecondary, fontSize = 13.sp)
-                Text("ယခင်လ - " + formatKyat(row.previous), color = AppColors.TextSecondary, fontSize = 13.sp)
+                Text(tr("ဒီလ - ") + formatKyat(row.current), color = AppColors.TextSecondary, fontSize = 13.sp)
+                Text(tr("ယခင်လ - ") + formatKyat(row.previous), color = AppColors.TextSecondary, fontSize = 13.sp)
                 Text(
-                    "ကွာခြားချက် - " + formatSigned(diff),
+                    tr("ကွာခြားချက် - ") + formatSigned(diff),
                     color = if (diff == 0L) AppColors.TextSecondary else if (good) AppColors.Teal else AppColors.Danger,
                     fontSize = 13.sp
                 )
@@ -171,11 +172,11 @@ fun ReportScreen(db: AppDatabase, modifier: Modifier = Modifier) {
 
 private fun comparisonRows(current: MonthReport, previous: MonthReport): List<CompareRow> {
     return listOf(
-        CompareRow("ရရှိပိုင်ခွင့်ရှိတဲ့ ဝင်ငွေ", current.earnedIncome, previous.earnedIncome, true),
-        CompareRow("လက်ခံရရှိတဲ့ ဝင်ငွေ", current.receivedIncome, previous.receivedIncome, true),
-        CompareRow("ကုန်ကျစရိတ်", current.incurredExpense, previous.incurredExpense, false),
-        CompareRow("အမြတ်အရှုံး (Profit)", current.profit, previous.profit, true),
-        CompareRow("ငွေလည်ပတ်မှု (Cash Flow)", current.cashFlow, previous.cashFlow, true)
+        CompareRow(tr("ရရှိပိုင်ခွင့်ရှိတဲ့ ဝင်ငွေ"), current.earnedIncome, previous.earnedIncome, true),
+        CompareRow(tr("လက်ခံရရှိတဲ့ ဝင်ငွေ"), current.receivedIncome, previous.receivedIncome, true),
+        CompareRow(tr("ကုန်ကျစရိတ်"), current.incurredExpense, previous.incurredExpense, false),
+        CompareRow(tr("အမြတ်အရှုံး (Profit)"), current.profit, previous.profit, true),
+        CompareRow(tr("ငွေလည်ပတ်မှု (Cash Flow)"), current.cashFlow, previous.cashFlow, true)
     )
 }
 

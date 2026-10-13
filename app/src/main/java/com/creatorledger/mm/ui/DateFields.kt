@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import java.time.LocalDate
+import com.creatorledger.mm.util.tr
 
 fun showDatePicker(context: Context, current: String?, onPicked: (String) -> Unit) {
     val date = try {
@@ -46,9 +47,9 @@ fun OptionalDateField(label: String, value: String?, onChange: (String?) -> Unit
         OutlinedButton(
             modifier = Modifier.weight(1f),
             onClick = { showDatePicker(context, value) { picked -> onChange(picked) } }
-        ) { Text(label + " - " + (value ?: "မသတ်မှတ်ထားပါ")) }
+        ) { Text(label + " - " + (value ?: tr("မသတ်မှတ်ထားပါ"))) }
         if (value != null) {
-            TextButton(onClick = { onChange(null) }) { Text("ဖယ်ရှားမယ်") }
+            TextButton(onClick = { onChange(null) }) { Text(tr("ဖယ်ရှားမယ်")) }
         }
     }
 }

@@ -40,6 +40,7 @@ import com.creatorledger.mm.data.PaymentStatus
 import com.creatorledger.mm.util.formatKyat
 import java.time.YearMonth
 import kotlinx.coroutines.launch
+import com.creatorledger.mm.util.tr
 
 @Composable
 fun IncomeScreen(db: AppDatabase, modifier: Modifier = Modifier) {
@@ -95,7 +96,7 @@ fun IncomeScreen(db: AppDatabase, modifier: Modifier = Modifier) {
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             item {
-                Text("ဝင်ငွေ", color = Color.White, fontSize = 26.sp, fontWeight = FontWeight.Bold)
+                Text(tr("ဝင်ငွေ"), color = Color.White, fontSize = 26.sp, fontWeight = FontWeight.Bold)
             }
 
             item {
@@ -105,7 +106,7 @@ fun IncomeScreen(db: AppDatabase, modifier: Modifier = Modifier) {
                         editing = null
                         showForm = true
                     }
-                ) { Text("+ ဝင်ငွေအသစ် ထည့်မယ်") }
+                ) { Text(tr("+ ဝင်ငွေအသစ် ထည့်မယ်")) }
             }
 
             // လ အလိုက် စစ်ထုတ်ခြင်း
@@ -115,14 +116,14 @@ fun IncomeScreen(db: AppDatabase, modifier: Modifier = Modifier) {
                         Text("◀")
                     }
                     Text(
-                        text = if (mf == null) "လအားလုံး" else monthLabel(mf),
+                        text = if (mf == null) tr("လအားလုံး") else monthLabel(mf),
                         color = Color.White,
                         fontSize = 16.sp
                     )
                     TextButton(onClick = { monthFilter = (mf ?: YearMonth.now()).plusMonths(1) }) {
                         Text("▶")
                     }
-                    FilterOption("လအားလုံး", mf == null) { monthFilter = null }
+                    FilterOption(tr("လအားလုံး"), mf == null) { monthFilter = null }
                 }
             }
 
@@ -132,7 +133,7 @@ fun IncomeScreen(db: AppDatabase, modifier: Modifier = Modifier) {
                     modifier = Modifier.horizontalScroll(rememberScrollState()),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    FilterOption("Platform အားလုံး", pf == null) { platformFilter = null }
+                    FilterOption(tr("Platform အားလုံး"), pf == null) { platformFilter = null }
                     for (code in INCOME_PLATFORM_CODES) {
                         FilterOption(platformLabel(code), pf == code) { platformFilter = code }
                     }
@@ -142,7 +143,7 @@ fun IncomeScreen(db: AppDatabase, modifier: Modifier = Modifier) {
             // ငွေပေးချေမှု အခြေအနေ အလိုက် စစ်ထုတ်ခြင်း
             item {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    FilterOption("အားလုံး", sf == null) { statusFilter = null }
+                    FilterOption(tr("အားလုံး"), sf == null) { statusFilter = null }
                     FilterOption(
                         incomeStatusLabel(PaymentStatus.RECEIVED),
                         sf == PaymentStatus.RECEIVED
@@ -162,19 +163,19 @@ fun IncomeScreen(db: AppDatabase, modifier: Modifier = Modifier) {
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
-                            "မှတ်တမ်း " + filtered.size + " ခု",
+                            tr("မှတ်တမ်း ") + filtered.size + tr(" ခု"),
                             color = AppColors.TextSecondary,
                             fontSize = 14.sp
                         )
                         Spacer(modifier = Modifier.height(6.dp))
                         Text(
-                            "လက်ခံရရှိပြီး - " + formatKyat(receivedSum),
+                            tr("လက်ခံရရှိပြီး - ") + formatKyat(receivedSum),
                             color = AppColors.Teal,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            "မရသေးပါ - " + formatKyat(pendingSum),
+                            tr("မရသေးပါ - ") + formatKyat(pendingSum),
                             color = AppColors.Warning,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold
@@ -186,7 +187,7 @@ fun IncomeScreen(db: AppDatabase, modifier: Modifier = Modifier) {
             if (filtered.isEmpty()) {
                 item {
                     Text(
-                        "ဒီစစ်ထုတ်မှုနဲ့ ကိုက်တဲ့ ဝင်ငွေမှတ်တမ်း မရှိပါ။",
+                        tr("ဒီစစ်ထုတ်မှုနဲ့ ကိုက်တဲ့ ဝင်ငွေမှတ်တမ်း မရှိပါ။"),
                         color = AppColors.TextSecondary,
                         fontSize = 14.sp
                     )
@@ -210,11 +211,11 @@ fun IncomeScreen(db: AppDatabase, modifier: Modifier = Modifier) {
     if (target != null) {
         AlertDialog(
             onDismissRequest = { deleteTarget = null },
-            title = { Text("ဖျက်မလား?") },
+            title = { Text(tr("ဖျက်မလား?")) },
             text = {
                 Text(
                     target.source + " - " + formatKyat(target.amountMmk) +
-                        " မှတ်တမ်းကို ဖျက်ပါမယ်။ ပြန်မရနိုင်ပါ။"
+                        tr(" မှတ်တမ်းကို ဖျက်ပါမယ်။ ပြန်မရနိုင်ပါ။")
                 )
             },
             confirmButton = {
@@ -223,10 +224,10 @@ fun IncomeScreen(db: AppDatabase, modifier: Modifier = Modifier) {
                         deleteTarget = null
                         scope.launch { db.incomeDao().delete(target) }
                     }
-                ) { Text("ဖျက်မယ်") }
+                ) { Text(tr("ဖျက်မယ်")) }
             },
             dismissButton = {
-                TextButton(onClick = { deleteTarget = null }) { Text("မဖျက်ဘူး") }
+                TextButton(onClick = { deleteTarget = null }) { Text(tr("မဖျက်ဘူး")) }
             }
         )
     }
@@ -274,15 +275,15 @@ private fun IncomeCard(income: IncomeEntity, onEdit: () -> Unit, onDelete: () ->
             ) {
                 if (income.paymentStatus == PaymentStatus.RECEIVED) {
                     Text(
-                        "လက်ခံရရှိပြီး (" + (income.receivedDate ?: "") + ")",
+                        tr("လက်ခံရရှိပြီး (") + (income.receivedDate ?: "") + ")",
                         color = AppColors.Teal,
                         fontSize = 13.sp
                     )
                 } else {
-                    Text("မရသေးပါ", color = AppColors.Warning, fontSize = 13.sp)
+                    Text(tr("မရသေးပါ"), color = AppColors.Warning, fontSize = 13.sp)
                 }
                 TextButton(onClick = onDelete) {
-                    Text("ဖျက်မယ်", color = AppColors.Danger)
+                    Text(tr("ဖျက်မယ်"), color = AppColors.Danger)
                 }
             }
         }

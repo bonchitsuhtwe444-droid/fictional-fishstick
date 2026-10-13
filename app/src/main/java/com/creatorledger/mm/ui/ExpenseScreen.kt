@@ -40,6 +40,7 @@ import com.creatorledger.mm.data.PaymentStatus
 import com.creatorledger.mm.util.formatKyat
 import java.time.YearMonth
 import kotlinx.coroutines.launch
+import com.creatorledger.mm.util.tr
 
 // မှတ်တမ်းတစ်ခုရဲ့ ခေါင်းစဉ် - ဖော်ပြချက်ရှိရင် ဖော်ပြချက်၊ မရှိရင် အမျိုးအစားနာမည်
 private fun expenseTitle(expense: ExpenseEntity): String {
@@ -100,7 +101,7 @@ fun ExpenseScreen(db: AppDatabase, modifier: Modifier = Modifier) {
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             item {
-                Text("အသုံးစရိတ်", color = Color.White, fontSize = 26.sp, fontWeight = FontWeight.Bold)
+                Text(tr("အသုံးစရိတ်"), color = Color.White, fontSize = 26.sp, fontWeight = FontWeight.Bold)
             }
 
             item {
@@ -110,7 +111,7 @@ fun ExpenseScreen(db: AppDatabase, modifier: Modifier = Modifier) {
                         editing = null
                         showForm = true
                     }
-                ) { Text("+ အသုံးစရိတ်အသစ် ထည့်မယ်") }
+                ) { Text(tr("+ အသုံးစရိတ်အသစ် ထည့်မယ်")) }
             }
 
             // လ အလိုက် စစ်ထုတ်ခြင်း
@@ -120,14 +121,14 @@ fun ExpenseScreen(db: AppDatabase, modifier: Modifier = Modifier) {
                         Text("◀")
                     }
                     Text(
-                        text = if (mf == null) "လအားလုံး" else monthLabel(mf),
+                        text = if (mf == null) tr("လအားလုံး") else monthLabel(mf),
                         color = Color.White,
                         fontSize = 16.sp
                     )
                     TextButton(onClick = { monthFilter = (mf ?: YearMonth.now()).plusMonths(1) }) {
                         Text("▶")
                     }
-                    FilterOption("လအားလုံး", mf == null) { monthFilter = null }
+                    FilterOption(tr("လအားလုံး"), mf == null) { monthFilter = null }
                 }
             }
 
@@ -137,7 +138,7 @@ fun ExpenseScreen(db: AppDatabase, modifier: Modifier = Modifier) {
                     modifier = Modifier.horizontalScroll(rememberScrollState()),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    FilterOption("အမျိုးအစားအားလုံး", cf == null) { categoryFilter = null }
+                    FilterOption(tr("အမျိုးအစားအားလုံး"), cf == null) { categoryFilter = null }
                     for (code in EXPENSE_CATEGORY_CODES) {
                         FilterOption(categoryLabel(code), cf == code) { categoryFilter = code }
                     }
@@ -147,7 +148,7 @@ fun ExpenseScreen(db: AppDatabase, modifier: Modifier = Modifier) {
             // ငွေပေးချေမှု အခြေအနေ အလိုက် စစ်ထုတ်ခြင်း
             item {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    FilterOption("အားလုံး", sf == null) { statusFilter = null }
+                    FilterOption(tr("အားလုံး"), sf == null) { statusFilter = null }
                     FilterOption(
                         expenseStatusLabel(PaymentStatus.PAID),
                         sf == PaymentStatus.PAID
@@ -167,19 +168,19 @@ fun ExpenseScreen(db: AppDatabase, modifier: Modifier = Modifier) {
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
-                            "မှတ်တမ်း " + filtered.size + " ခု",
+                            tr("မှတ်တမ်း ") + filtered.size + tr(" ခု"),
                             color = AppColors.TextSecondary,
                             fontSize = 14.sp
                         )
                         Spacer(modifier = Modifier.height(6.dp))
                         Text(
-                            "ပေးချေပြီး - " + formatKyat(paidSum),
+                            tr("ပေးချေပြီး - ") + formatKyat(paidSum),
                             color = AppColors.Danger,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            "မပေးရသေးပါ - " + formatKyat(unpaidSum),
+                            tr("မပေးရသေးပါ - ") + formatKyat(unpaidSum),
                             color = AppColors.Warning,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold
@@ -191,7 +192,7 @@ fun ExpenseScreen(db: AppDatabase, modifier: Modifier = Modifier) {
             if (filtered.isEmpty()) {
                 item {
                     Text(
-                        "ဒီစစ်ထုတ်မှုနဲ့ ကိုက်တဲ့ အသုံးစရိတ်မှတ်တမ်း မရှိပါ။",
+                        tr("ဒီစစ်ထုတ်မှုနဲ့ ကိုက်တဲ့ အသုံးစရိတ်မှတ်တမ်း မရှိပါ။"),
                         color = AppColors.TextSecondary,
                         fontSize = 14.sp
                     )
@@ -215,11 +216,11 @@ fun ExpenseScreen(db: AppDatabase, modifier: Modifier = Modifier) {
     if (target != null) {
         AlertDialog(
             onDismissRequest = { deleteTarget = null },
-            title = { Text("ဖျက်မလား?") },
+            title = { Text(tr("ဖျက်မလား?")) },
             text = {
                 Text(
                     expenseTitle(target) + " - " + formatKyat(target.amountMmk) +
-                        " မှတ်တမ်းကို ဖျက်ပါမယ်။ ပြန်မရနိုင်ပါ။"
+                        tr(" မှတ်တမ်းကို ဖျက်ပါမယ်။ ပြန်မရနိုင်ပါ။")
                 )
             },
             confirmButton = {
@@ -228,10 +229,10 @@ fun ExpenseScreen(db: AppDatabase, modifier: Modifier = Modifier) {
                         deleteTarget = null
                         scope.launch { db.expenseDao().delete(target) }
                     }
-                ) { Text("ဖျက်မယ်") }
+                ) { Text(tr("ဖျက်မယ်")) }
             },
             dismissButton = {
-                TextButton(onClick = { deleteTarget = null }) { Text("မဖျက်ဘူး") }
+                TextButton(onClick = { deleteTarget = null }) { Text(tr("မဖျက်ဘူး")) }
             }
         )
     }
@@ -276,15 +277,15 @@ private fun ExpenseCard(expense: ExpenseEntity, onEdit: () -> Unit, onDelete: ()
             ) {
                 if (expense.paymentStatus == PaymentStatus.PAID) {
                     Text(
-                        "ပေးချေပြီး (" + (expense.paidDate ?: "") + ")",
+                        tr("ပေးချေပြီး (") + (expense.paidDate ?: "") + ")",
                         color = AppColors.Teal,
                         fontSize = 13.sp
                     )
                 } else {
-                    Text("မပေးရသေးပါ", color = AppColors.Warning, fontSize = 13.sp)
+                    Text(tr("မပေးရသေးပါ"), color = AppColors.Warning, fontSize = 13.sp)
                 }
                 TextButton(onClick = onDelete) {
-                    Text("ဖျက်မယ်", color = AppColors.Danger)
+                    Text(tr("ဖျက်မယ်"), color = AppColors.Danger)
                 }
             }
         }

@@ -6,6 +6,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -38,15 +39,20 @@ import com.creatorledger.mm.data.buildBackupJson
 import com.creatorledger.mm.data.buildCsv
 import com.creatorledger.mm.data.parseBackup
 import com.creatorledger.mm.data.restoreBackup
+import com.creatorledger.mm.util.AppLanguage
+import com.creatorledger.mm.util.LANG_EN
+import com.creatorledger.mm.util.LANG_MY
+import com.creatorledger.mm.util.saveLanguage
 import java.time.LocalDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import com.creatorledger.mm.util.tr
 
 private suspend fun writeTextToUri(context: Context, uri: Uri, text: String) {
     withContext(Dispatchers.IO) {
         val out = context.contentResolver.openOutputStream(uri, "wt")
-            ?: throw java.io.IOException("ဖိုင်ဖွင့်လို့ မရပါ")
+            ?: throw java.io.IOException(tr("ဖိုင်ဖွင့်လို့ မရပါ"))
         out.use { stream -> stream.write(text.toByteArray(Charsets.UTF_8)) }
     }
 }
@@ -54,11 +60,11 @@ private suspend fun writeTextToUri(context: Context, uri: Uri, text: String) {
 private suspend fun readTextFromUri(context: Context, uri: Uri): String {
     return withContext(Dispatchers.IO) {
         val input = context.contentResolver.openInputStream(uri)
-            ?: throw java.io.IOException("ဖိုင်ဖွင့်လို့ မရပါ")
+            ?: throw java.io.IOException(tr("ဖိုင်ဖွင့်လို့ မရပါ"))
         input.use { stream ->
             val bytes = stream.readBytes()
             if (bytes.size > 20_000_000) {
-                throw BackupFormatException("ဖိုင်က ကြီးလွန်းပါတယ်")
+                throw BackupFormatException(tr("ဖိုင်က ကြီးလွန်းပါတယ်"))
             }
             String(bytes, Charsets.UTF_8)
         }
@@ -82,9 +88,9 @@ fun SettingsScreen(db: AppDatabase, modifier: Modifier = Modifier) {
             scope.launch {
                 message = try {
                     writeTextToUri(context, uri, buildBackupJson(db))
-                    "Backup ဖိုင် သိမ်းပြီးပါပြီ"
+                    tr("Backup ဖိုင် သိမ်းပြီးပါပြီ")
                 } catch (e: Exception) {
-                    "Backup သိမ်းလို့ မရပါ"
+                    tr("Backup သိမ်းလို့ မရပါ")
                 }
             }
         }
@@ -99,9 +105,9 @@ fun SettingsScreen(db: AppDatabase, modifier: Modifier = Modifier) {
             scope.launch {
                 message = try {
                     writeTextToUri(context, uri, buildCsv(db, kind))
-                    "CSV ဖိုင် သိမ်းပြီးပါပြီ"
+                    tr("CSV ဖိုင် သိမ်းပြီးပါပြီ")
                 } catch (e: Exception) {
-                    "CSV သိမ်းလို့ မရပါ"
+                    tr("CSV သိမ်းလို့ မရပါ")
                 }
             }
         }
@@ -118,9 +124,9 @@ fun SettingsScreen(db: AppDatabase, modifier: Modifier = Modifier) {
                     restorePreview = parseBackup(text)
                     ""
                 } catch (e: BackupFormatException) {
-                    e.message ?: "Backup ဖိုင် မမှန်ပါ"
+                    e.message ?: tr("Backup ဖိုင် မမှန်ပါ")
                 } catch (e: Exception) {
-                    "ဖိုင်ဖတ်လို့ မရပါ"
+                    tr("ဖိုင်ဖတ်လို့ မရပါ")
                 }
             }
         }
@@ -133,51 +139,63 @@ fun SettingsScreen(db: AppDatabase, modifier: Modifier = Modifier) {
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Text("ဆက်တင်နှင့် Backup", color = Color.White, fontSize = 26.sp, fontWeight = FontWeight.Bold)
+        Text(tr("ဆက်တင်နှင့် Backup"), color = Color.White, fontSize = 26.sp, fontWeight = FontWeight.Bold)
+
+        Text(tr("ဘာသာစကား / Language"), color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            FilterOption(tr("မြန်မာ"), AppLanguage.code != LANG_EN) {
+                AppLanguage.code = LANG_MY
+                saveLanguage(context, LANG_MY)
+            }
+            FilterOption("English", AppLanguage.code == LANG_EN) {
+                AppLanguage.code = LANG_EN
+                saveLanguage(context, LANG_EN)
+            }
+        }
 
         Card(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(containerColor = AppColors.NavyLight)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
-                Text("သတိပြုရန်", color = AppColors.Warning, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Text(tr("သတိပြုရန်"), color = AppColors.Warning, fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 Text(
-                    "သင့်ရဲ့ ငွေစာရင်း Data တွေက ဖုန်းထဲမှာပဲ သိမ်းထားပါတယ်။ " +
-                        "Backup မလုပ်ဘဲ App ကို ဖျက်ရင် (Uninstall) Data အားလုံး ပျောက်သွားနိုင်ပါတယ်။ " +
-                        "ပုံမှန် Backup လုပ်ပြီး ဖိုင်ကို ဖုန်းအပြင်ဘက် (ဥပမာ Google Drive) မှာလည်း သိမ်းထားပါ။",
+                    tr("သင့်ရဲ့ ငွေစာရင်း Data တွေက ဖုန်းထဲမှာပဲ သိမ်းထားပါတယ်။ ") +
+                        tr("Backup မလုပ်ဘဲ App ကို ဖျက်ရင် (Uninstall) Data အားလုံး ပျောက်သွားနိုင်ပါတယ်။ ") +
+                        tr("ပုံမှန် Backup လုပ်ပြီး ဖိုင်ကို ဖုန်းအပြင်ဘက် (ဥပမာ Google Drive) မှာလည်း သိမ်းထားပါ။"),
                     color = AppColors.TextSecondary,
                     fontSize = 14.sp
                 )
             }
         }
 
-        Text("Backup (Data အကုန်သိမ်းခြင်း)", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+        Text(tr("Backup (Data အကုန်သိမ်းခြင်း)"), color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
         Button(
             modifier = Modifier.fillMaxWidth(),
             onClick = { jsonSaver.launch("creatorledger-backup-" + LocalDate.now() + ".json") }
-        ) { Text("Backup ဖိုင် (JSON) သိမ်းမယ်") }
+        ) { Text(tr("Backup ဖိုင် (JSON) သိမ်းမယ်")) }
 
-        Text("Restore (Backup ဖိုင်ကနေ ပြန်ယူခြင်း)", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+        Text(tr("Restore (Backup ဖိုင်ကနေ ပြန်ယူခြင်း)"), color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
         OutlinedButton(
             modifier = Modifier.fillMaxWidth(),
             onClick = { restoreOpener.launch(arrayOf("*/*")) }
-        ) { Text("Backup ဖိုင်ရွေးပြီး Restore လုပ်မယ်") }
+        ) { Text(tr("Backup ဖိုင်ရွေးပြီး Restore လုပ်မယ်")) }
 
-        Text("CSV ထုတ်ယူခြင်း (Excel အတွက်)", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+        Text(tr("CSV ထုတ်ယူခြင်း (Excel အတွက်)"), color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
         OutlinedButton(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
                 pendingCsv = CsvKind.INCOMES
                 csvSaver.launch("creatorledger-incomes-" + LocalDate.now() + ".csv")
             }
-        ) { Text("ဝင်ငွေ CSV") }
+        ) { Text(tr("ဝင်ငွေ CSV")) }
         OutlinedButton(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
                 pendingCsv = CsvKind.EXPENSES
                 csvSaver.launch("creatorledger-expenses-" + LocalDate.now() + ".csv")
             }
-        ) { Text("အသုံးစရိတ် CSV") }
+        ) { Text(tr("အသုံးစရိတ် CSV")) }
         OutlinedButton(
             modifier = Modifier.fillMaxWidth(),
             onClick = {
@@ -191,28 +209,28 @@ fun SettingsScreen(db: AppDatabase, modifier: Modifier = Modifier) {
                 pendingCsv = CsvKind.SPONSOR_PAYMENTS
                 csvSaver.launch("creatorledger-sponsor-payments-" + LocalDate.now() + ".csv")
             }
-        ) { Text("Sponsor ငွေလက်ခံမှတ်တမ်း CSV") }
+        ) { Text(tr("Sponsor ငွေလက်ခံမှတ်တမ်း CSV")) }
 
         if (message.isNotEmpty()) {
             Text(message, color = AppColors.Teal, fontSize = 15.sp)
         }
 
-        Text("CreatorLedger MM  ဗားရှင်း 0.1", color = AppColors.TextSecondary, fontSize = 12.sp)
+        Text(tr("CreatorLedger MM  ဗားရှင်း 0.1"), color = AppColors.TextSecondary, fontSize = 12.sp)
     }
 
     val preview = restorePreview
     if (preview != null) {
         AlertDialog(
             onDismissRequest = { restorePreview = null },
-            title = { Text("Restore လုပ်မလား?") },
+            title = { Text(tr("Restore လုပ်မလား?")) },
             text = {
                 Text(
-                    "ဒီ Backup ထဲမှာ ဝင်ငွေ " + preview.incomes.size +
-                        " ခု၊ အသုံးစရိတ် " + preview.expenses.size +
-                        " ခု၊ Sponsor Deal " + preview.deals.size +
-                        " ခု၊ ငွေလက်ခံမှတ်တမ်း " + preview.payments.size + " ခု ရှိပါတယ်။\n\n" +
-                        "Restore လုပ်ရင် လက်ရှိ App ထဲက Data အားလုံးကို ဒီ Backup နဲ့ အစားထိုးပါမယ်။ " +
-                        "လက်ရှိ Data ကို ပြန်ယူချင်ရင် အရင် Backup လုပ်ထားပါ။"
+                    tr("ဒီ Backup ထဲမှာ ဝင်ငွေ ") + preview.incomes.size +
+                        tr(" ခု၊ အသုံးစရိတ် ") + preview.expenses.size +
+                        tr(" ခု၊ Sponsor Deal ") + preview.deals.size +
+                        tr(" ခု၊ ငွေလက်ခံမှတ်တမ်း ") + preview.payments.size + tr(" ခု ရှိပါတယ်။\n\n") +
+                        tr("Restore လုပ်ရင် လက်ရှိ App ထဲက Data အားလုံးကို ဒီ Backup နဲ့ အစားထိုးပါမယ်။ ") +
+                        tr("လက်ရှိ Data ကို ပြန်ယူချင်ရင် အရင် Backup လုပ်ထားပါ။")
                 )
             },
             confirmButton = {
@@ -222,16 +240,16 @@ fun SettingsScreen(db: AppDatabase, modifier: Modifier = Modifier) {
                         scope.launch {
                             message = try {
                                 restoreBackup(db, preview)
-                                "Restore ပြီးပါပြီ"
+                                tr("Restore ပြီးပါပြီ")
                             } catch (e: Exception) {
-                                "Restore မအောင်မြင်ပါ၊ လက်ရှိ Data မပြောင်းလဲပါ"
+                                tr("Restore မအောင်မြင်ပါ၊ လက်ရှိ Data မပြောင်းလဲပါ")
                             }
                         }
                     }
-                ) { Text("အစားထိုးမယ်") }
+                ) { Text(tr("အစားထိုးမယ်")) }
             },
             dismissButton = {
-                TextButton(onClick = { restorePreview = null }) { Text("မလုပ်တော့ဘူး") }
+                TextButton(onClick = { restorePreview = null }) { Text(tr("မလုပ်တော့ဘူး")) }
             }
         )
     }

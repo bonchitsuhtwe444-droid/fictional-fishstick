@@ -35,6 +35,7 @@ import com.creatorledger.mm.data.PaymentStatus
 import com.creatorledger.mm.util.formatKyat
 import com.creatorledger.mm.util.parseAmount
 import java.time.LocalDate
+import com.creatorledger.mm.util.tr
 
 private fun pickExpenseDate(context: Context, current: String, onPicked: (String) -> Unit) {
     val date = try {
@@ -81,13 +82,13 @@ fun ExpenseFormScreen(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Text(
-            text = if (initial == null) "အသုံးစရိတ်အသစ် ထည့်ရန်" else "အသုံးစရိတ် ပြင်ဆင်ရန်",
+            text = if (initial == null) tr("အသုံးစရိတ်အသစ် ထည့်ရန်") else tr("အသုံးစရိတ် ပြင်ဆင်ရန်"),
             color = Color.White,
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold
         )
 
-        Text("အမျိုးအစား", color = AppColors.TextSecondary, fontSize = 14.sp)
+        Text(tr("အမျိုးအစား"), color = AppColors.TextSecondary, fontSize = 14.sp)
         Row(
             modifier = Modifier.horizontalScroll(rememberScrollState()),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -100,20 +101,20 @@ fun ExpenseFormScreen(
         OutlinedTextField(
             value = description,
             onValueChange = { description = it },
-            label = { Text("ဖော်ပြချက် (ဥပမာ - Video editor ကြေး)") },
+            label = { Text(tr("ဖော်ပြချက် (ဥပမာ - Video editor ကြေး)")) },
             modifier = Modifier.fillMaxWidth()
         )
 
         OutlinedTextField(
             value = amountText,
             onValueChange = { amountText = it },
-            label = { Text("ပမာဏ (ကျပ်)") },
+            label = { Text(tr("ပမာဏ (ကျပ်)")) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             isError = triedSave && amountError,
             supportingText = {
                 if (triedSave && amountError) {
-                    Text("ပမာဏကို ၀ ထက်ကြီးတဲ့ ဂဏန်းနဲ့ ဖြည့်ပါ")
+                    Text(tr("ပမာဏကို ၀ ထက်ကြီးတဲ့ ဂဏန်းနဲ့ ဖြည့်ပါ"))
                 } else if (amount != null && amount > 0L) {
                     Text(formatKyat(amount))
                 }
@@ -124,9 +125,9 @@ fun ExpenseFormScreen(
         OutlinedButton(
             modifier = Modifier.fillMaxWidth(),
             onClick = { pickExpenseDate(context, expenseDate) { picked -> expenseDate = picked } }
-        ) { Text("အသုံးစရိတ်ဖြစ်သည့်ရက် - " + expenseDate) }
+        ) { Text(tr("အသုံးစရိတ်ဖြစ်သည့်ရက် - ") + expenseDate) }
 
-        Text("ငွေပေးချေမှု အခြေအနေ", color = AppColors.TextSecondary, fontSize = 14.sp)
+        Text(tr("ငွေပေးချေမှု အခြေအနေ"), color = AppColors.TextSecondary, fontSize = 14.sp)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             FilterOption(
                 expenseStatusLabel(PaymentStatus.PAID),
@@ -142,10 +143,10 @@ fun ExpenseFormScreen(
             OutlinedButton(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = { pickExpenseDate(context, paidDate) { picked -> paidDate = picked } }
-            ) { Text("ငွေပေးချေခဲ့သည့်ရက် - " + paidDate) }
+            ) { Text(tr("ငွေပေးချေခဲ့သည့်ရက် - ") + paidDate) }
         } else {
             Text(
-                "ငွေပေးချေပြီးတဲ့အခါ ဒီမှတ်တမ်းကို ပြင်ပြီး 'ပေးချေပြီး' သို့ ပြောင်းပါ။",
+                tr("ငွေပေးချေပြီးတဲ့အခါ ဒီမှတ်တမ်းကို ပြင်ပြီး 'ပေးချေပြီး' သို့ ပြောင်းပါ။"),
                 color = AppColors.TextSecondary,
                 fontSize = 13.sp
             )
@@ -154,7 +155,7 @@ fun ExpenseFormScreen(
         OutlinedTextField(
             value = note,
             onValueChange = { note = it },
-            label = { Text("မှတ်ချက်") },
+            label = { Text(tr("မှတ်ချက်")) },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -180,9 +181,9 @@ fun ExpenseFormScreen(
                         )
                     }
                 }
-            ) { Text("သိမ်းမယ်") }
+            ) { Text(tr("သိမ်းမယ်")) }
 
-            TextButton(onClick = onCancel) { Text("မလုပ်တော့ဘူး") }
+            TextButton(onClick = onCancel) { Text(tr("မလုပ်တော့ဘူး")) }
         }
     }
 }

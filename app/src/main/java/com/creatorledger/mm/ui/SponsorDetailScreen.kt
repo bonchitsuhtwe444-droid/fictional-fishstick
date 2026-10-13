@@ -36,6 +36,7 @@ import com.creatorledger.mm.data.SponsorPaymentEntity
 import com.creatorledger.mm.util.formatKyat
 import com.creatorledger.mm.util.parseAmount
 import java.time.LocalDate
+import com.creatorledger.mm.util.tr
 
 @Composable
 fun SponsorDetailScreen(
@@ -63,7 +64,7 @@ fun SponsorDetailScreen(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        TextButton(onClick = onBack) { Text("◀ Deal စာရင်းသို့") }
+        TextButton(onClick = onBack) { Text(tr("◀ Deal စာရင်းသို့")) }
 
         Text(deal.brandName, color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
         if (deal.campaignName.isNotEmpty()) {
@@ -75,13 +76,13 @@ fun SponsorDetailScreen(
             colors = CardDefaults.cardColors(containerColor = AppColors.NavyLight)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
-                Text("သဘောတူထားသော ကြေး", color = AppColors.TextSecondary, fontSize = 13.sp)
+                Text(tr("သဘောတူထားသော ကြေး"), color = AppColors.TextSecondary, fontSize = 13.sp)
                 Text(formatKyat(deal.agreedFeeMmk), color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text("လက်ခံရရှိပြီးငွေ", color = AppColors.TextSecondary, fontSize = 13.sp)
+                Text(tr("လက်ခံရရှိပြီးငွေ"), color = AppColors.TextSecondary, fontSize = 13.sp)
                 Text(formatKyat(received), color = AppColors.Teal, fontSize = 20.sp, fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(8.dp))
-                Text("ရရန်ကျန်ငွေ", color = AppColors.TextSecondary, fontSize = 13.sp)
+                Text(tr("ရရန်ကျန်ငွေ"), color = AppColors.TextSecondary, fontSize = 13.sp)
                 Text(
                     formatKyat(remaining),
                     color = if (remaining > 0L) AppColors.Warning else AppColors.Teal,
@@ -96,20 +97,20 @@ fun SponsorDetailScreen(
             colors = CardDefaults.cardColors(containerColor = AppColors.NavyLight)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
-                Text("အခြေအနေ - " + dealStatusLabel(deal.status), color = Color.White, fontSize = 14.sp)
+                Text(tr("အခြေအနေ - ") + dealStatusLabel(deal.status), color = Color.White, fontSize = 14.sp)
                 Text("Deal Date - " + deal.dealDate, color = AppColors.TextSecondary, fontSize = 13.sp)
                 Text(
-                    "Delivery Deadline - " + (deal.deliveryDeadline ?: "မသတ်မှတ်ထားပါ"),
+                    "Delivery Deadline - " + (deal.deliveryDeadline ?: tr("မသတ်မှတ်ထားပါ")),
                     color = AppColors.TextSecondary,
                     fontSize = 13.sp
                 )
                 Text(
-                    "Payment Due Date - " + (deal.paymentDueDate ?: "မသတ်မှတ်ထားပါ"),
+                    "Payment Due Date - " + (deal.paymentDueDate ?: tr("မသတ်မှတ်ထားပါ")),
                     color = AppColors.TextSecondary,
                     fontSize = 13.sp
                 )
                 if (deal.note.isNotEmpty()) {
-                    Text("မှတ်ချက် - " + deal.note, color = AppColors.TextSecondary, fontSize = 13.sp)
+                    Text(tr("မှတ်ချက် - ") + deal.note, color = AppColors.TextSecondary, fontSize = 13.sp)
                 }
             }
         }
@@ -120,18 +121,18 @@ fun SponsorDetailScreen(
                 editingPayment = null
                 showPaymentDialog = true
             }
-        ) { Text("+ ငွေလက်ခံမှတ်တမ်း ထည့်မယ်") }
+        ) { Text(tr("+ ငွေလက်ခံမှတ်တမ်း ထည့်မယ်")) }
 
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            OutlinedButton(onClick = onEditDeal) { Text("Deal ပြင်မယ်") }
+            OutlinedButton(onClick = onEditDeal) { Text(tr("Deal ပြင်မယ်")) }
             OutlinedButton(onClick = { showDeleteDeal = true }) {
-                Text("Deal ဖျက်မယ်", color = AppColors.Danger)
+                Text(tr("Deal ဖျက်မယ်"), color = AppColors.Danger)
             }
         }
 
-        Text("ငွေလက်ခံမှတ်တမ်းများ", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+        Text(tr("ငွေလက်ခံမှတ်တမ်းများ"), color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
         if (payments.isEmpty()) {
-            Text("ငွေလက်ခံထားတာ မရှိသေးပါ။", color = AppColors.TextSecondary, fontSize = 14.sp)
+            Text(tr("ငွေလက်ခံထားတာ မရှိသေးပါ။"), color = AppColors.TextSecondary, fontSize = 14.sp)
         }
         for (p in payments) {
             Card(
@@ -157,9 +158,9 @@ fun SponsorDetailScreen(
                             editingPayment = p
                             showPaymentDialog = true
                         }
-                    ) { Text("ပြင်မယ်") }
+                    ) { Text(tr("ပြင်မယ်")) }
                     TextButton(onClick = { deletePaymentTarget = p }) {
-                        Text("ဖျက်မယ်", color = AppColors.Danger)
+                        Text(tr("ဖျက်မယ်"), color = AppColors.Danger)
                     }
                 }
             }
@@ -184,11 +185,11 @@ fun SponsorDetailScreen(
     if (payTarget != null) {
         AlertDialog(
             onDismissRequest = { deletePaymentTarget = null },
-            title = { Text("ဖျက်မလား?") },
+            title = { Text(tr("ဖျက်မလား?")) },
             text = {
                 Text(
                     formatKyat(payTarget.amountMmk) + " (" + payTarget.receivedDate +
-                        ") ငွေလက်ခံမှတ်တမ်းကို ဖျက်ပါမယ်။ ရရန်ကျန်ငွေ ပြန်တက်သွားပါမယ်။"
+                        tr(") ငွေလက်ခံမှတ်တမ်းကို ဖျက်ပါမယ်။ ရရန်ကျန်ငွေ ပြန်တက်သွားပါမယ်။")
                 )
             },
             confirmButton = {
@@ -197,10 +198,10 @@ fun SponsorDetailScreen(
                         deletePaymentTarget = null
                         onDeletePayment(payTarget)
                     }
-                ) { Text("ဖျက်မယ်") }
+                ) { Text(tr("ဖျက်မယ်")) }
             },
             dismissButton = {
-                TextButton(onClick = { deletePaymentTarget = null }) { Text("မဖျက်ဘူး") }
+                TextButton(onClick = { deletePaymentTarget = null }) { Text(tr("မဖျက်ဘူး")) }
             }
         )
     }
@@ -208,11 +209,11 @@ fun SponsorDetailScreen(
     if (showDeleteDeal) {
         AlertDialog(
             onDismissRequest = { showDeleteDeal = false },
-            title = { Text("Deal ကို ဖျက်မလား?") },
+            title = { Text(tr("Deal ကို ဖျက်မလား?")) },
             text = {
                 Text(
-                    deal.brandName + " Deal နဲ့ ငွေလက်ခံမှတ်တမ်း " + payments.size +
-                        " ခုကို အကုန်ဖျက်ပါမယ်။ ပြန်မရနိုင်ပါ။"
+                    deal.brandName + tr(" Deal နဲ့ ငွေလက်ခံမှတ်တမ်း ") + payments.size +
+                        tr(" ခုကို အကုန်ဖျက်ပါမယ်။ ပြန်မရနိုင်ပါ။")
                 )
             },
             confirmButton = {
@@ -221,10 +222,10 @@ fun SponsorDetailScreen(
                         showDeleteDeal = false
                         onDeleteDeal()
                     }
-                ) { Text("ဖျက်မယ်") }
+                ) { Text(tr("ဖျက်မယ်")) }
             },
             dismissButton = {
-                TextButton(onClick = { showDeleteDeal = false }) { Text("မဖျက်ဘူး") }
+                TextButton(onClick = { showDeleteDeal = false }) { Text(tr("မဖျက်ဘူး")) }
             }
         )
     }
@@ -246,9 +247,9 @@ private fun PaymentDialog(
 
     val amount = parseAmount(amountText)
     val error: String? = if (amount == null || amount <= 0L) {
-        "ပမာဏကို ၀ ထက်ကြီးတဲ့ ဂဏန်းနဲ့ ဖြည့်ပါ"
+        tr("ပမာဏကို ၀ ထက်ကြီးတဲ့ ဂဏန်းနဲ့ ဖြည့်ပါ")
     } else if (amount > maxAmount) {
-        "ရရန်ကျန်ငွေ (" + formatKyat(maxAmount) + ") ထက် မကျော်ရပါ"
+        tr("ရရန်ကျန်ငွေ (") + formatKyat(maxAmount) + tr(") ထက် မကျော်ရပါ")
     } else {
         null
     }
@@ -256,14 +257,14 @@ private fun PaymentDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
-            Text(if (initial == null) "ငွေလက်ခံမှတ်တမ်း ထည့်ရန်" else "ငွေလက်ခံမှတ်တမ်း ပြင်ရန်")
+            Text(if (initial == null) tr("ငွေလက်ခံမှတ်တမ်း ထည့်ရန်") else tr("ငွေလက်ခံမှတ်တမ်း ပြင်ရန်"))
         },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 OutlinedTextField(
                     value = amountText,
                     onValueChange = { amountText = it },
-                    label = { Text("လက်ခံရရှိတဲ့ပမာဏ (ကျပ်)") },
+                    label = { Text(tr("လက်ခံရရှိတဲ့ပမာဏ (ကျပ်)")) },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     isError = tried && error != null,
@@ -276,11 +277,11 @@ private fun PaymentDialog(
                     },
                     modifier = Modifier.fillMaxWidth()
                 )
-                DateButton("ငွေလက်ခံရသည့်ရက်", date) { date = it }
+                DateButton(tr("ငွေလက်ခံရသည့်ရက်"), date) { date = it }
                 OutlinedTextField(
                     value = note,
                     onValueChange = { note = it },
-                    label = { Text("မှတ်ချက်") },
+                    label = { Text(tr("မှတ်ချက်")) },
                     modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -301,10 +302,10 @@ private fun PaymentDialog(
                         )
                     }
                 }
-            ) { Text("သိမ်းမယ်") }
+            ) { Text(tr("သိမ်းမယ်")) }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("မလုပ်တော့ဘူး") }
+            TextButton(onClick = onDismiss) { Text(tr("မလုပ်တော့ဘူး")) }
         }
     )
 }

@@ -35,6 +35,7 @@ import com.creatorledger.mm.data.PaymentStatus
 import com.creatorledger.mm.util.formatKyat
 import com.creatorledger.mm.util.parseAmount
 import java.time.LocalDate
+import com.creatorledger.mm.util.tr
 
 private fun pickDate(context: Context, current: String, onPicked: (String) -> Unit) {
     val date = try {
@@ -83,7 +84,7 @@ fun IncomeFormScreen(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Text(
-            text = if (initial == null) "ဝင်ငွေအသစ် ထည့်ရန်" else "ဝင်ငွေ ပြင်ဆင်ရန်",
+            text = if (initial == null) tr("ဝင်ငွေအသစ် ထည့်ရန်") else tr("ဝင်ငွေ ပြင်ဆင်ရန်"),
             color = Color.White,
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold
@@ -92,10 +93,10 @@ fun IncomeFormScreen(
         OutlinedTextField(
             value = source,
             onValueChange = { source = it },
-            label = { Text("ဝင်ငွေရင်းမြစ် (ဥပမာ - YouTube AdSense)") },
+            label = { Text(tr("ဝင်ငွေရင်းမြစ် (ဥပမာ - YouTube AdSense)")) },
             singleLine = true,
             isError = triedSave && sourceError,
-            supportingText = { if (triedSave && sourceError) Text("ဝင်ငွေရင်းမြစ်ကို ဖြည့်ပါ") },
+            supportingText = { if (triedSave && sourceError) Text(tr("ဝင်ငွေရင်းမြစ်ကို ဖြည့်ပါ")) },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -112,20 +113,20 @@ fun IncomeFormScreen(
         OutlinedTextField(
             value = description,
             onValueChange = { description = it },
-            label = { Text("ဖော်ပြချက်") },
+            label = { Text(tr("ဖော်ပြချက်")) },
             modifier = Modifier.fillMaxWidth()
         )
 
         OutlinedTextField(
             value = amountText,
             onValueChange = { amountText = it },
-            label = { Text("ပမာဏ (ကျပ်)") },
+            label = { Text(tr("ပမာဏ (ကျပ်)")) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             isError = triedSave && amountError,
             supportingText = {
                 if (triedSave && amountError) {
-                    Text("ပမာဏကို ၀ ထက်ကြီးတဲ့ ဂဏန်းနဲ့ ဖြည့်ပါ")
+                    Text(tr("ပမာဏကို ၀ ထက်ကြီးတဲ့ ဂဏန်းနဲ့ ဖြည့်ပါ"))
                 } else if (amount != null && amount > 0L) {
                     Text(formatKyat(amount))
                 }
@@ -136,9 +137,9 @@ fun IncomeFormScreen(
         OutlinedButton(
             modifier = Modifier.fillMaxWidth(),
             onClick = { pickDate(context, incomeDate) { picked -> incomeDate = picked } }
-        ) { Text("ဝင်ငွေရရှိသည့်ရက် - " + incomeDate) }
+        ) { Text(tr("ဝင်ငွေရရှိသည့်ရက် - ") + incomeDate) }
 
-        Text("ငွေပေးချေမှု အခြေအနေ", color = AppColors.TextSecondary, fontSize = 14.sp)
+        Text(tr("ငွေပေးချေမှု အခြေအနေ"), color = AppColors.TextSecondary, fontSize = 14.sp)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             FilterOption(
                 incomeStatusLabel(PaymentStatus.RECEIVED),
@@ -154,10 +155,10 @@ fun IncomeFormScreen(
             OutlinedButton(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = { pickDate(context, receivedDate) { picked -> receivedDate = picked } }
-            ) { Text("ငွေလက်ခံရရှိသည့်ရက် - " + receivedDate) }
+            ) { Text(tr("ငွေလက်ခံရရှိသည့်ရက် - ") + receivedDate) }
         } else {
             Text(
-                "ငွေရတဲ့အခါ ဒီမှတ်တမ်းကို ပြင်ပြီး 'လက်ခံရရှိပြီး' သို့ ပြောင်းပါ။",
+                tr("ငွေရတဲ့အခါ ဒီမှတ်တမ်းကို ပြင်ပြီး 'လက်ခံရရှိပြီး' သို့ ပြောင်းပါ။"),
                 color = AppColors.TextSecondary,
                 fontSize = 13.sp
             )
@@ -166,7 +167,7 @@ fun IncomeFormScreen(
         OutlinedTextField(
             value = note,
             onValueChange = { note = it },
-            label = { Text("မှတ်ချက်") },
+            label = { Text(tr("မှတ်ချက်")) },
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -193,9 +194,9 @@ fun IncomeFormScreen(
                         )
                     }
                 }
-            ) { Text("သိမ်းမယ်") }
+            ) { Text(tr("သိမ်းမယ်")) }
 
-            TextButton(onClick = onCancel) { Text("မလုပ်တော့ဘူး") }
+            TextButton(onClick = onCancel) { Text(tr("မလုပ်တော့ဘူး")) }
         }
     }
 }

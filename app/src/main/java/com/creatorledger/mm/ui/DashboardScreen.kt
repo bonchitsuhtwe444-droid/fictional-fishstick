@@ -24,10 +24,11 @@ import com.creatorledger.mm.data.DashboardData
 import com.creatorledger.mm.data.RecentTransaction
 import com.creatorledger.mm.util.formatKyat
 import java.time.YearMonth
+import com.creatorledger.mm.util.tr
 
-private val MONTH_NAMES = listOf(
-    "ဇန်နဝါရီ", "ဖေဖော်ဝါရီ", "မတ်", "ဧပြီ", "မေ", "ဇွန်",
-    "ဇူလိုင်", "ဩဂုတ်", "စက်တင်ဘာ", "အောက်တိုဘာ", "နိုဝင်ဘာ", "ဒီဇင်ဘာ"
+private val MONTH_NAMES get() = listOf(
+    tr("ဇန်နဝါရီ"), tr("ဖေဖော်ဝါရီ"), tr("မတ်"), tr("ဧပြီ"), tr("မေ"), tr("ဇွန်"),
+    tr("ဇူလိုင်"), tr("ဩဂုတ်"), tr("စက်တင်ဘာ"), tr("အောက်တိုဘာ"), tr("နိုဝင်ဘာ"), tr("ဒီဇင်ဘာ")
 )
 
 @Composable
@@ -51,10 +52,10 @@ fun DashboardScreen(
         Text(monthLabel, color = AppColors.TextSecondary, fontSize = 16.sp)
 
         SummaryCard(
-            label = "လစဉ်အမြတ်",
+            label = tr("လစဉ်အမြတ်"),
             value = formatKyat(profit),
             valueColor = if (profit >= 0) AppColors.Teal else AppColors.Danger,
-            caption = "လက်ခံရရှိငွေ − ပေးချေပြီးအသုံးစရိတ်",
+            caption = tr("လက်ခံရရှိငွေ − ပေးချေပြီးအသုံးစရိတ်"),
             modifier = Modifier.fillMaxWidth()
         )
 
@@ -63,13 +64,13 @@ fun DashboardScreen(
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             SummaryCard(
-                label = "လက်ခံရရှိပြီး ဝင်ငွေ",
+                label = tr("လက်ခံရရှိပြီး ဝင်ငွေ"),
                 value = formatKyat(data.receivedIncome),
                 valueColor = AppColors.Teal,
                 modifier = Modifier.weight(1f)
             )
             SummaryCard(
-                label = "ပေးချေပြီး အသုံးစရိတ်",
+                label = tr("ပေးချေပြီး အသုံးစရိတ်"),
                 value = formatKyat(data.paidExpense),
                 valueColor = AppColors.Danger,
                 modifier = Modifier.weight(1f)
@@ -81,15 +82,15 @@ fun DashboardScreen(
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             SummaryCard(
-                label = "ရရန်ကျန်ငွေ",
+                label = tr("ရရန်ကျန်ငွေ"),
                 value = formatKyat(data.remainingToReceive),
                 valueColor = AppColors.Warning,
-                caption = "စုစုပေါင်း",
+                caption = tr("စုစုပေါင်း"),
                 modifier = Modifier.weight(1f)
             )
             SummaryCard(
-                label = "ငွေမပြည့်သေးသော Sponsor",
-                value = data.unpaidSponsorCount.toString() + " ခု",
+                label = tr("ငွေမပြည့်သေးသော Sponsor"),
+                value = data.unpaidSponsorCount.toString() + tr(" ခု"),
                 valueColor = AppColors.Warning,
                 modifier = Modifier.weight(1f)
             )
@@ -98,8 +99,8 @@ fun DashboardScreen(
         RecentCard(recent)
 
         InfoCard(
-            title = "လစဉ် ဝင်ငွေနှင့် အသုံးစရိတ် Graph",
-            note = "Graph ကို Stage 7 မှာ ဆောက်ပါမယ်။"
+            title = tr("လစဉ် ဝင်ငွေနှင့် အသုံးစရိတ် Graph"),
+            note = tr("Graph ကို Stage 7 မှာ ဆောက်ပါမယ်။")
         )
     }
 }
@@ -149,13 +150,13 @@ private fun RecentCard(recent: List<RecentTransaction>) {
         colors = CardDefaults.cardColors(containerColor = AppColors.NavyLight)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text("နောက်ဆုံး မှတ်တမ်းများ", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-            Text("ရက်စွဲအသစ်ဆုံး ၅ ခု", color = AppColors.TextSecondary, fontSize = 12.sp)
+            Text(tr("နောက်ဆုံး မှတ်တမ်းများ"), color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+            Text(tr("ရက်စွဲအသစ်ဆုံး ၅ ခု"), color = AppColors.TextSecondary, fontSize = 12.sp)
             Spacer(modifier = Modifier.height(8.dp))
 
             if (recent.isEmpty()) {
                 Text(
-                    "မှတ်တမ်း မရှိသေးပါ။ ဝင်ငွေ/အသုံးစရိတ် ထည့်လာရင် ဒီမှာ ပေါ်လာပါမယ်။",
+                    tr("မှတ်တမ်း မရှိသေးပါ။ ဝင်ငွေ/အသုံးစရိတ် ထည့်လာရင် ဒီမှာ ပေါ်လာပါမယ်။"),
                     color = AppColors.TextSecondary,
                     fontSize = 14.sp
                 )
@@ -169,13 +170,13 @@ private fun RecentCard(recent: List<RecentTransaction>) {
                 } else {
                     ""
                 }
-                val kind = if (item.isIncome) "ဝင်ငွေ" else "အသုံးစရိတ်"
+                val kind = if (item.isIncome) tr("ဝင်ငွေ") else tr("အသုံးစရိတ်")
                 val pending = if (item.isSettled) {
                     ""
                 } else if (item.isIncome) {
-                    " • မရသေး"
+                    tr(" • မရသေး")
                 } else {
-                    " • မပေးရသေး"
+                    tr(" • မပေးရသေး")
                 }
 
                 Row(

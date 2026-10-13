@@ -2,6 +2,7 @@ package com.creatorledger.mm.ui
 
 import com.creatorledger.mm.data.PaymentStatus
 import java.time.YearMonth
+import com.creatorledger.mm.util.tr
 
 // ဝင်ငွေဖောင်မှာ ရွေးခွင့်ပေးမယ့် Platform များ (Sponsorship ကို Sponsor Manager မှာပဲ မှတ်တယ်)
 val INCOME_PLATFORM_CODES = listOf("YOUTUBE", "FACEBOOK", "TIKTOK", "FREELANCE", "OTHER")
@@ -20,15 +21,15 @@ fun platformLabel(code: String): String {
 
 fun incomeStatusLabel(code: String): String {
     return when (code) {
-        PaymentStatus.RECEIVED -> "လက်ခံရရှိပြီး"
-        PaymentStatus.PENDING -> "မရသေးပါ"
+        PaymentStatus.RECEIVED -> tr("လက်ခံရရှိပြီး")
+        PaymentStatus.PENDING -> tr("မရသေးပါ")
         else -> code
     }
 }
 
-private val MONTHS_MM = listOf(
-    "ဇန်နဝါရီ", "ဖေဖော်ဝါရီ", "မတ်", "ဧပြီ", "မေ", "ဇွန်",
-    "ဇူလိုင်", "ဩဂုတ်", "စက်တင်ဘာ", "အောက်တိုဘာ", "နိုဝင်ဘာ", "ဒီဇင်ဘာ"
+private val MONTHS_MM get() = listOf(
+    tr("ဇန်နဝါရီ"), tr("ဖေဖော်ဝါရီ"), tr("မတ်"), tr("ဧပြီ"), tr("မေ"), tr("ဇွန်"),
+    tr("ဇူလိုင်"), tr("ဩဂုတ်"), tr("စက်တင်ဘာ"), tr("အောက်တိုဘာ"), tr("နိုဝင်ဘာ"), tr("ဒီဇင်ဘာ")
 )
 
 fun monthLabel(month: YearMonth): String {
@@ -57,8 +58,8 @@ fun categoryLabel(code: String): String {
 
 fun expenseStatusLabel(code: String): String {
     return when (code) {
-        PaymentStatus.PAID -> "ပေးချေပြီး"
-        PaymentStatus.UNPAID -> "မပေးရသေးပါ"
+        PaymentStatus.PAID -> tr("ပေးချေပြီး")
+        PaymentStatus.UNPAID -> tr("မပေးရသေးပါ")
         else -> code
     }
 }
@@ -68,11 +69,11 @@ val DEAL_STATUS_CODES = listOf("NEGOTIATING", "ACTIVE", "DELIVERED", "COMPLETED"
 
 fun dealStatusLabel(code: String): String {
     return when (code) {
-        "NEGOTIATING" -> "ဆွေးနွေးဆဲ"
-        "ACTIVE" -> "လုပ်ဆောင်ဆဲ"
-        "DELIVERED" -> "ပို့ပြီး"
-        "COMPLETED" -> "ပြီးစီး"
-        "CANCELLED" -> "ပယ်ဖျက်"
+        "NEGOTIATING" -> tr("ဆွေးနွေးဆဲ")
+        "ACTIVE" -> tr("လုပ်ဆောင်ဆဲ")
+        "DELIVERED" -> tr("ပို့ပြီး")
+        "COMPLETED" -> tr("ပြီးစီး")
+        "CANCELLED" -> tr("ပယ်ဖျက်")
         else -> code
     }
 }

@@ -22,16 +22,17 @@ import com.creatorledger.mm.data.RecentTransaction
 import com.creatorledger.mm.data.observeDashboard
 import com.creatorledger.mm.data.observeRecent
 import java.time.YearMonth
+import com.creatorledger.mm.util.tr
 
 private data class TabItem(val label: String, val icon: String)
 
-private val tabs = listOf(
-    TabItem("ပင်မ", "🏠"),
-    TabItem("ဝင်ငွေ", "💰"),
-    TabItem("ကုန်ကျ", "💸"),
+private val tabs get() = listOf(
+    TabItem(tr("ပင်မ"), "🏠"),
+    TabItem(tr("ဝင်ငွေ"), "💰"),
+    TabItem(tr("ကုန်ကျ"), "💸"),
     TabItem("Sponsor", "🤝"),
     TabItem("Report", "📊"),
-    TabItem("ဆက်တင်", "⚙️")
+    TabItem(tr("ဆက်တင်"), "⚙️")
 )
 
 @Composable
