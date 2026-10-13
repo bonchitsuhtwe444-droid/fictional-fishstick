@@ -201,5 +201,8 @@ val EN_STRINGS: Map<String, String> = mapOf(
     "အောက်တိုဘာ" to "October",
     "ဧပြီ" to "April",
     "ဩဂုတ်" to "August",
-    "◀ Deal စာရင်းသို့" to "◀ Back to deals"
+    "◀ Deal စာရင်းသို့" to "◀ Back to deals",
+    "နောက်ဆုံး ၆ လ (လက်ခံရရှိငွေ / ပေးချေပြီးငွေ)" to "Last 6 months (money received / money paid)",
+    "ဒီ ၆ လအတွင်း မှတ်တမ်း မရှိသေးပါ။" to "No records in the last 6 months yet.",
+    "အမြင့်ဆုံး ဘား = " to "Tallest bar = "
 )

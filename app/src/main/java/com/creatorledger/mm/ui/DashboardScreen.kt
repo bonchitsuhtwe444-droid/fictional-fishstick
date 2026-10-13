@@ -36,7 +36,8 @@ fun DashboardScreen(
     data: DashboardData,
     month: YearMonth,
     recent: List<RecentTransaction>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    chartContent: @Composable () -> Unit = {}
 ) {
     val monthLabel = MONTH_NAMES[month.monthValue - 1] + " " + month.year
     val profit = data.monthlyProfit
@@ -98,10 +99,7 @@ fun DashboardScreen(
 
         RecentCard(recent)
 
-        InfoCard(
-            title = tr("လစဉ် ဝင်ငွေနှင့် အသုံးစရိတ် Graph"),
-            note = tr("Graph ကို Stage 7 မှာ ဆောက်ပါမယ်။")
-        )
+        chartContent()
     }
 }
 

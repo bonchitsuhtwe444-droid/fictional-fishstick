@@ -69,7 +69,9 @@ fun CreatorLedgerApp() {
     ) { innerPadding ->
         val contentModifier = Modifier.padding(innerPadding)
         when (selected) {
-            0 -> DashboardScreen(dashboard, month, recent, contentModifier)
+            0 -> DashboardScreen(dashboard, month, recent, contentModifier) {
+                MonthlyChartCard(db)
+            }
             1 -> IncomeScreen(db, contentModifier)
             2 -> ExpenseScreen(db, contentModifier)
             3 -> SponsorScreen(db, contentModifier)
