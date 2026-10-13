@@ -62,3 +62,21 @@ fun expenseStatusLabel(code: String): String {
         else -> code
     }
 }
+
+// Sponsor Deal အခြေအနေများ
+val DEAL_STATUS_CODES = listOf("NEGOTIATING", "ACTIVE", "DELIVERED", "COMPLETED", "CANCELLED")
+
+fun dealStatusLabel(code: String): String {
+    return when (code) {
+        "NEGOTIATING" -> "ဆွေးနွေးဆဲ"
+        "ACTIVE" -> "လုပ်ဆောင်ဆဲ"
+        "DELIVERED" -> "ပို့ပြီး"
+        "COMPLETED" -> "ပြီးစီး"
+        "CANCELLED" -> "ပယ်ဖျက်"
+        else -> code
+    }
+}
+
+fun monthName(monthValue: Int): String {
+    return MONTHS_MM[monthValue - 1]
+}

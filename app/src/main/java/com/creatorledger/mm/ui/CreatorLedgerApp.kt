@@ -71,9 +71,9 @@ fun CreatorLedgerApp() {
             0 -> DashboardScreen(dashboard, month, recent, contentModifier)
             1 -> IncomeScreen(db, contentModifier)
             2 -> ExpenseScreen(db, contentModifier)
-            3 -> PlaceholderScreen("Sponsorship Manager", "Stage 6 မှာ ဆောက်ပါမယ်", contentModifier)
-            4 -> PlaceholderScreen("လစဉ် Report", "Stage 7 မှာ ဆောက်ပါမယ်", contentModifier)
-            else -> DebugScreen(db, contentModifier)
+            3 -> SponsorScreen(db, contentModifier)
+            4 -> ReportScreen(db, contentModifier)
+            else -> SettingsScreen(db, contentModifier)
         }
     }
 }
