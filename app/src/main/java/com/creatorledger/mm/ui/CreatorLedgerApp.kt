@@ -18,7 +18,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.sp
 import com.creatorledger.mm.data.AppDatabase
 import com.creatorledger.mm.data.DashboardData
+import com.creatorledger.mm.data.RecentTransaction
 import com.creatorledger.mm.data.observeDashboard
+import com.creatorledger.mm.data.observeRecent
 import java.time.YearMonth
 
 private data class TabItem(val label: String, val icon: String)
@@ -41,6 +43,8 @@ fun CreatorLedgerApp() {
     val month = remember { YearMonth.now() }
     val dashboardFlow = remember { observeDashboard(db, month) }
     val dashboard by dashboardFlow.collectAsState(initial = DashboardData())
+    val recentFlow = remember { observeRecent(db) }
+    val recent by recentFlow.collectAsState(initial = emptyList<RecentTransaction>())
 
     Scaffold(
         containerColor = AppColors.Navy,
@@ -64,7 +68,7 @@ fun CreatorLedgerApp() {
     ) { innerPadding ->
         val contentModifier = Modifier.padding(innerPadding)
         when (selected) {
-            0 -> DashboardScreen(dashboard, month, contentModifier)
+            0 -> DashboardScreen(dashboard, month, recent, contentModifier)
             1 -> IncomeScreen(db, contentModifier)
             2 -> ExpenseScreen(db, contentModifier)
             3 -> PlaceholderScreen("Sponsorship Manager", "Stage 6 မှာ ဆောက်ပါမယ်", contentModifier)

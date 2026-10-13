@@ -36,3 +36,51 @@ fun observeDashboard(db: AppDatabase, month: YearMonth): Flow<DashboardData> {
         )
     }
 }
+
+// ပင်မစာမျက်နှာမှာ ပြမယ့် မကြာသေးခင်က မှတ်တမ်းတစ်ခု (ဝင်ငွေ သို့ အသုံးစရိတ်)
+data class RecentTransaction(
+    val isIncome: Boolean,
+    val id: Long,
+    val title: String,          // ဝင်ငွေ - ရင်းမြစ်၊ အသုံးစရိတ် - ဖော်ပြချက် (ဗလာနိုင်တယ်)
+    val categoryCode: String?,  // အသုံးစရိတ်အမျိုးအစား (ဝင်ငွေဆိုရင် null)
+    val amountMmk: Long,
+    val date: String,
+    val isSettled: Boolean      // ဝင်ငွေ - လက်ခံရရှိပြီး၊ အသုံးစရိတ် - ပေးချေပြီး
+)
+
+// ဝင်ငွေနဲ့ အသုံးစရိတ်ကို ပေါင်းပြီး ရက်စွဲအသစ်ဆုံး limit အရေအတွက်ယူတယ်
+fun observeRecent(db: AppDatabase, limit: Int = 5): Flow<List<RecentTransaction>> {
+    return combine(
+        db.incomeDao().observeAll(),
+        db.expenseDao().observeAll()
+    ) { incomes, expenses ->
+        val items = ArrayList<RecentTransaction>()
+        for (i in incomes) {
+            items.add(
+                RecentTransaction(
+                    isIncome = true,
+                    id = i.id,
+                    title = i.source,
+                    categoryCode = null,
+                    amountMmk = i.amountMmk,
+                    date = i.incomeDate,
+                    isSettled = i.paymentStatus == PaymentStatus.RECEIVED
+                )
+            )
+        }
+        for (e in expenses) {
+            items.add(
+                RecentTransaction(
+                    isIncome = false,
+                    id = e.id,
+                    title = e.description,
+                    categoryCode = e.category,
+                    amountMmk = e.amountMmk,
+                    date = e.expenseDate,
+                    isSettled = e.paymentStatus == PaymentStatus.PAID
+                )
+            )
+        }
+        items.sortedByDescending { it.date }.take(limit)
+    }
+}
