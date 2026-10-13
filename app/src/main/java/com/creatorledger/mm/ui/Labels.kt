@@ -34,3 +34,31 @@ private val MONTHS_MM = listOf(
 fun monthLabel(month: YearMonth): String {
     return MONTHS_MM[month.monthValue - 1] + " " + month.year
 }
+
+// အသုံးစရိတ် အမျိုးအစားများ
+val EXPENSE_CATEGORY_CODES = listOf(
+    "VIDEO_EDITING", "VOICE_OVER", "THUMBNAIL", "SOFTWARE",
+    "INTERNET", "EQUIPMENT", "ADVERTISING", "OTHER"
+)
+
+fun categoryLabel(code: String): String {
+    return when (code) {
+        "VIDEO_EDITING" -> "Video Editing"
+        "VOICE_OVER" -> "Voice-over"
+        "THUMBNAIL" -> "Thumbnail Design"
+        "SOFTWARE" -> "Software and Subscriptions"
+        "INTERNET" -> "Internet and Mobile Data"
+        "EQUIPMENT" -> "Equipment"
+        "ADVERTISING" -> "Advertising"
+        "OTHER" -> "Other"
+        else -> code
+    }
+}
+
+fun expenseStatusLabel(code: String): String {
+    return when (code) {
+        PaymentStatus.PAID -> "ပေးချေပြီး"
+        PaymentStatus.UNPAID -> "မပေးရသေးပါ"
+        else -> code
+    }
+}

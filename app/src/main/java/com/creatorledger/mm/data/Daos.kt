@@ -42,6 +42,16 @@ interface ExpenseDao {
     @Insert
     suspend fun insert(expense: ExpenseEntity): Long
 
+    @Update
+    suspend fun update(expense: ExpenseEntity)
+
+    @Delete
+    suspend fun delete(expense: ExpenseEntity)
+
+    // အသုံးစရိတ်မှတ်တမ်းအားလုံး (ရက်စွဲအသစ်ဆုံးက အပေါ်)
+    @Query("SELECT * FROM expenses ORDER BY expenseDate DESC, id DESC")
+    fun observeAll(): Flow<List<ExpenseEntity>>
+
     // ပေးချေပြီး အသုံးစရိတ် (ရက်အပိုင်းအခြားတစ်ခုအတွင်း)
     @Query(
         "SELECT COALESCE(SUM(amountMmk), 0) FROM expenses " +
