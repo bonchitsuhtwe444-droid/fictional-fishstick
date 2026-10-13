@@ -1,14 +1,26 @@
 package com.creatorledger.mm.data
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface IncomeDao {
     @Insert
     suspend fun insert(income: IncomeEntity): Long
+
+    @Update
+    suspend fun update(income: IncomeEntity)
+
+    @Delete
+    suspend fun delete(income: IncomeEntity)
+
+    // ဝင်ငွေမှတ်တမ်းအားလုံး (ရက်စွဲအသစ်ဆုံးက အပေါ်)
+    @Query("SELECT * FROM incomes ORDER BY incomeDate DESC, id DESC")
+    fun observeAll(): Flow<List<IncomeEntity>>
 
     // လက်ခံရရှိပြီး ဝင်ငွေ (ရက်အပိုင်းအခြားတစ်ခုအတွင်း)
     @Query(

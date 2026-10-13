@@ -65,7 +65,7 @@ fun CreatorLedgerApp() {
         val contentModifier = Modifier.padding(innerPadding)
         when (selected) {
             0 -> DashboardScreen(dashboard, month, contentModifier)
-            1 -> PlaceholderScreen("ဝင်ငွေ စီမံခန့်ခွဲမှု", "Stage 4 မှာ ဆောက်ပါမယ်", contentModifier)
+            1 -> IncomeScreen(db, contentModifier)
             2 -> PlaceholderScreen("အသုံးစရိတ် စီမံခန့်ခွဲမှု", "Stage 5 မှာ ဆောက်ပါမယ်", contentModifier)
             3 -> PlaceholderScreen("Sponsorship Manager", "Stage 6 မှာ ဆောက်ပါမယ်", contentModifier)
             4 -> PlaceholderScreen("လစဉ် Report", "Stage 7 မှာ ဆောက်ပါမယ်", contentModifier)
